@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inside Count - Main Menu</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1532/1532953.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<script src="https://unpkg.com/dexie/dist/dexie.js"></script>
+    <style>
+        body { background-color: #020617; color: white; font-family: 'Segoe UI', sans-serif; }
+        .era-card:hover { border-color: #ef4444; transform: translateY(-5px); box-shadow: 0 10px 30px -10px rgba(239, 68, 68, 0.5); }
+        .selected { border-color: #ef4444; background-color: #1e293b; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+        .save-slot:hover { background-color: #1e293b; border-color: #ef4444; }
+        /* Scrollbar for save list */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    </style>
+</head>
+<body class="h-screen flex flex-col p-8 overflow-hidden">
+
+    <div class="max-w-7xl w-full mx-auto h-full flex flex-col lg:flex-row gap-10">
+        
+        <div class="flex-1 flex flex-col overflow-y-auto pr-4">
+            <div class="mb-6">
+                <h1 class="text-5xl font-black italic tracking-tighter mb-2">INSIDE<span class="text-red-600">COUNT</span></h1>
+                <p class="text-slate-400 text-lg">Initialize a new Universe. Choose your booking philosophy.</p>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Universe Name</label>
+                <input id="universeName" type="text" placeholder="e.g. My Monday Night Wars" class="w-full bg-slate-900 border border-slate-700 p-4 rounded-lg text-white focus:outline-none focus:border-red-600 transition text-lg font-bold">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                
+                <div class="era-card cursor-pointer bg-slate-900 border-2 border-slate-800 p-5 rounded-xl transition group relative" onclick="selectEra(this, 'territories')">
+                    <div class="absolute top-3 right-3 text-slate-700 group-hover:text-red-500"><i class="fa-solid fa-map"></i></div>
+                    <h3 class="font-bold text-lg mb-1">Territories</h3>
+                    <div class="text-xs font-mono text-slate-500 mb-2">1948 - 1982</div>
+                    <p class="text-xs text-slate-400">Strict Kayfabe. Slow pacing. NWA style.</p>
+                </div>
+
+                <div class="era-card cursor-pointer bg-slate-900 border-2 border-slate-800 p-5 rounded-xl transition group relative" onclick="selectEra(this, 'golden')">
+                    <div class="absolute top-3 right-3 text-slate-700 group-hover:text-yellow-500"><i class="fa-solid fa-crown"></i></div>
+                    <h3 class="font-bold text-lg mb-1 text-yellow-500">Golden Era</h3>
+                    <div class="text-xs font-mono text-slate-500 mb-2">1982 - 1993</div>
+                    <p class="text-xs text-slate-400">Larger than life. Squash matches on TV.</p>
+                </div>
+
+<div class="era-card cursor-pointer bg-slate-900 border-2 border-slate-800 p-5 rounded-xl transition group relative" onclick="selectEra(this, 'new_generation')">
+                    <div class="absolute top-3 right-3 text-slate-700 group-hover:text-pink-500"><i class="fa-solid fa-bolt"></i></div>
+                    <h3 class="font-bold text-lg mb-1 text-pink-500">New Generation</h3>
+                    <div class="text-xs font-mono text-slate-500 mb-2">1993 - 1997</div>
+                    <p class="text-xs text-slate-400">Technicians & Gimmicks. The dawn of Monday Night.</p>
+                </div>
+
+
+                <div class="era-card cursor-pointer bg-slate-900 border-2 border-slate-800 p-5 rounded-xl transition group relative" onclick="selectEra(this, 'attitude')">
+                    <div class="absolute top-3 right-3 text-slate-700 group-hover:text-red-600"><i class="fa-solid fa-glass-cheers"></i></div>
+                    <h3 class="font-bold text-lg mb-1 text-red-600">Attitude Era</h3>
+                    <div class="text-xs font-mono text-slate-500 mb-2">1997 - 2002</div>
+                    <p class="text-xs text-slate-400">Crash TV. Hardcore rules. Shock value.</p>
+                </div>
+
+                <div class="era-card cursor-pointer bg-slate-900 border-2 border-slate-800 p-5 rounded-xl transition group relative selected" onclick="selectEra(this, 'ruthless')">
+                    <div class="absolute top-3 right-3 text-slate-700 group-hover:text-blue-500"><i class="fa-solid fa-fist-raised"></i></div>
+                    <h3 class="font-bold text-lg mb-1 text-blue-500">Ruthless Aggression</h3>
+                    <div class="text-xs font-mono text-slate-500 mb-2">2002 - 2008</div>
+                    <p class="text-xs text-slate-400">Mix of workrate and story. Brand Split.</p>
+                </div>
+                
+                 <div class="era-card cursor-pointer bg-slate-900 border-2 border-slate-800 p-5 rounded-xl transition group relative" onclick="selectEra(this, 'pg')">
+                    <div class="absolute top-3 right-3 text-slate-700 group-hover:text-purple-500"><i class="fa-solid fa-child"></i></div>
+                    <h3 class="font-bold text-lg mb-1">PG Era</h3>
+                    <div class="text-xs font-mono text-slate-500 mb-2">2008 - 2014</div>
+                    <p class="text-xs text-slate-400">Family friendly. Celebrity guests.</p>
+                </div>
+
+                 <div class="era-card cursor-pointer bg-slate-900 border-2 border-slate-800 p-5 rounded-xl transition group relative" onclick="selectEra(this, 'reality')">
+                    <div class="absolute top-3 right-3 text-slate-700 group-hover:text-green-500"><i class="fa-solid fa-video"></i></div>
+                    <h3 class="font-bold text-lg mb-1">Reality Era</h3>
+                    <div class="text-xs font-mono text-slate-500 mb-2">2014 - 2022</div>
+                    <p class="text-xs text-slate-400">Indie darlings. Meta-storylines. NXT style.</p>
+                </div>
+
+                 <div class="era-card cursor-pointer bg-slate-900 border-2 border-slate-800 p-5 rounded-xl transition group relative" onclick="selectEra(this, 'current')">
+                    <div class="absolute top-3 right-3 text-slate-700 group-hover:text-white"><i class="fa-solid fa-mobile-screen"></i></div>
+                    <h3 class="font-bold text-lg mb-1">Current Era</h3>
+                    <div class="text-xs font-mono text-slate-500 mb-2">2022 - Present</div>
+                    <p class="text-xs text-slate-400">Cinematic storytelling. Long reigns.</p>
+                </div>
+
+            </div>
+
+            <button onclick="createNewUniverse()" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-4 rounded-xl text-xl shadow-lg shadow-red-900/40 transition mb-10">
+                Start New Universe <i class="fa-solid fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+
+        <div class="w-full lg:w-1/3 bg-slate-900/50 border-l border-slate-800 pl-8 flex flex-col">
+            <h2 class="text-2xl font-bold mb-6 text-slate-300 pt-4"><i class="fa-solid fa-floppy-disk mr-2"></i> Load Universe</h2>
+            <div class="mb-4">
+    <button onclick="document.getElementById('import-file').click()" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg border border-slate-600 transition">
+        <i class="fa-solid fa-file-import mr-2"></i> Import JSON Save
+    </button>
+    <input type="file" id="import-file" class="hidden" accept=".json" onchange="importSaveFile(this)">
+</div>
+            <div id="save-slots" class="space-y-4 flex-1 overflow-y-auto pr-2">
+                <div class="text-slate-600 italic">No saved universes found.</div>
+            </div>
+            
+            <div class="mt-4 pt-4 border-t border-slate-800">
+                <button onclick="clearAllSaves()" class="text-xs text-red-900 hover:text-red-500 underline">Reset All Data</button>
+            </div>
+        </div>
+
+    </div>
+
+   <script>
+    // 1. Initialize the Database (Crucial for the menu to work)
+    const db = new Dexie("InsideCountDB");
+    db.version(1).stores({ saves: "id, name, era" });
+
+    let selectedEraId = 'ruthless';
+
+    function selectEra(element, eraId) {
+        document.querySelectorAll('.era-card').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+        selectedEraId = eraId;
+    }
+
+    // UPDATED: Creates new games directly in the Database
+    async function createNewUniverse() {
+        const nameInput = document.getElementById('universeName').value || "My WWE Universe";
+        
+        const defaultCalendar = [
+            { name: "Monday Night Raw", arena: "Raw Arena" },
+            { name: "Friday Night SmackDown", arena: "SmackDown Arena" },
+            { name: "Monthly PPV", arena: "Stadium" }
+        ];
+
+        const newSave = {
+            id: Date.now().toString(),
+            name: nameInput,
+            era: selectedEraId,
+            lastPlayed: new Date().toLocaleDateString(),
+            currentShowIndex: 0,
+            weekNumber: 1,
+            calendar: defaultCalendar 
+        };
+
+        // Save to Dexie instead of LocalStorage
+        await db.saves.put(newSave);
+
+        window.location.href = `Inside Count.html?id=${newSave.id}`;
+    }
+
+    // UPDATED: Reads the list from the Database
+    window.onload = async function() {
+        // Get all saves from Dexie
+        const saves = await db.saves.toArray();
+        const container = document.getElementById('save-slots');
+        
+        const eraNames = {
+            'territories': 'Territories', 
+            'golden': 'Golden Era', 
+            'new_generation': 'New Generation', // <--- ADDED THIS
+            'attitude': 'Attitude Era',
+            'ruthless': 'Ruthless Aggression', 
+            'pg': 'PG Era', 
+            'reality': 'Reality Era', 
+            'current': 'Current Era'
+        };
+        
+        if(saves.length > 0) {
+            container.innerHTML = ''; 
+            // Sort by newest first
+            saves.sort((a,b) => Number(b.id) - Number(a.id)).forEach(save => {
+                const displayEra = eraNames[save.era] || save.era;
+                
+                // --- DATE CALCULATION ---
+               // --- DATE CALCULATION (Oldest Editable Show) ---
+let dateDisplay = `Week ${save.weekNumber}`;
+
+function parseISODateSafe(dateStr) {
+    if (!dateStr || typeof dateStr !== 'string') return null;
+    const parts = dateStr.split('-').map(Number);
+    if (parts.length !== 3 || parts.some(n => Number.isNaN(n))) return null;
+    const [y, m, d] = parts;
+    return new Date(y, m - 1, d);
+}
+
+function getOldestEditableShow(shows) {
+    if (!Array.isArray(shows) || shows.length === 0) return null;
+
+    // "Editable" = not completed. Covers: planned, upcoming, in_progress, etc.
+    const editable = shows.filter(s => s && s.date && s.status !== 'completed');
+
+    if (editable.length === 0) return null;
+
+    editable.sort((a, b) => {
+        const da = parseISODateSafe(a.date);
+        const db = parseISODateSafe(b.date);
+        if (!da && !db) return 0;
+        if (!da) return 1;
+        if (!db) return -1;
+        return da - db;
+    });
+
+    return editable[0];
+}
+
+if (save.shows && save.shows.length > 0) {
+    const oldestEditable = getOldestEditableShow(save.shows);
+
+    if (oldestEditable) {
+        const dateObj = parseISODateSafe(oldestEditable.date);
+        dateDisplay = dateObj
+            ? dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+            : `Week ${save.weekNumber}`;
+    } else {
+        // No editable shows left
+        dateDisplay = "Season Completed";
+    }
+} else {
+    dateDisplay = "New Universe";
+}
+
+
+                // --- THE SLOT HTML ---
+                const slot = `
+                <div onclick="loadGame('${save.id}')" class="save-slot cursor-pointer bg-slate-900 border border-slate-700 p-5 rounded-lg transition flex justify-between items-center group mb-3 relative">
+                    <div>
+                        <div class="font-bold text-lg text-white group-hover:text-red-500 transition">${save.name}</div>
+                        <div class="text-xs text-slate-500 uppercase">${displayEra} <span class="mx-1 text-slate-600">|</span> <span class="text-blue-400 font-bold"><i class="fa-solid fa-calendar-day mr-1"></i> ${dateDisplay}</span></div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button onclick="deleteUniverse('${save.id}', event)" class="text-slate-600 hover:text-red-500 transition z-10 p-2" title="Delete Universe">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                        <i class="fa-solid fa-chevron-right text-slate-600 group-hover:text-white"></i>
+                    </div>
+                </div>`;
+                
+                container.innerHTML += slot;
+            });
+        } else {
+            container.innerHTML = '<div class="text-slate-600 italic">No saved universes found.</div>';
+        }
+    };
+
+    // UPDATED: Deletes from Database
+    async function deleteUniverse(id, event) {
+        event.stopPropagation(); 
+        if(confirm("Are you sure you want to delete this universe permanently? This cannot be undone.")) {
+            await db.saves.delete(String(id)); // Delete from Dexie
+            location.reload(); 
+        }
+    }
+
+    function loadGame(id) {
+        window.location.href = `Inside Count.html?id=${id}`;
+    }
+
+    // UPDATED: Clears Database
+    async function clearAllSaves() {
+        if(confirm("Delete all saves?")) {
+            await db.saves.clear(); // Clear Dexie
+            location.reload();
+        }
+    }
+
+    // UPDATED: Import function
+    async function importSaveFile(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                if (!data.id || !data.name) throw new Error("Invalid save file format.");
+                
+                // Ensure ID is string
+                data.id = String(data.id);
+
+                await db.saves.put(data);
+                alert(`Successfully imported "${data.name}"!`);
+                location.reload(); 
+            } catch (err) {
+                console.error(err);
+                alert("Error importing file: " + err.message);
+            }
+        };
+        reader.readAsText(file);
+    }
+</script>
+</body>
+</html>
