@@ -638,6 +638,29 @@
     margin-bottom: 4px;
 }
 
+/* --- MOBILE UI OPTIMIZATIONS --- */
+        @media (max-width: 768px) {
+            /* Fix Rankings Grid */
+            .rankings-centerfold-grid { grid-template-columns: 1fr !important; height: auto !important; min-height: auto !important; padding: 10px !important; }
+            .rankings-hero-panel { order: -1; min-height: 250px; border-width: 2px; }
+            .ranking-list-col { overflow: visible !important; height: auto !important; margin-bottom: 20px; }
+            .rank-card-top10 { height: auto; min-height: 60px; padding: 8px; }
+            .rank-card-top10 h4 { font-size: 1rem !important; }
+            .rank-number-big { font-size: 1.8rem; width: 30px; }
+            
+            /* Fix Calendar Squish */
+            #view-calendar .max-w-6xl { overflow-x: auto; padding-bottom: 15px; }
+            .calendar-grid { min-width: 700px; }
+            
+            /* Fix Magazine Sizing */
+            #archive-viewer { padding: 10px !important; }
+            .magazine-page { min-height: auto; }
+            .mag-header { padding: 15px; }
+            .mag-headline { font-size: 2rem; }
+            .mag-content { padding: 15px; }
+        }
+
+
     </style>
 </head>
 <body class="h-screen flex flex-col md:flex-row overflow-hidden">
@@ -731,8 +754,13 @@
         </header>
 
         <div id="view-dashboard" class="main-view hidden-view flex-1 overflow-hidden relative flex flex-col">
-            <div id="subview-planner" class="flex-1 overflow-y-auto p-6 flex gap-6">
-                <div class="w-1/3 flex flex-col gap-4">
+            <div id="subview-planner" class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col md:flex-row gap-6">
+    <div class="md:hidden w-full">
+        <button onclick="toggleMobileMenu('planner-sidebar')" class="w-full bg-slate-800 border border-slate-700 text-slate-300 hover:text-white py-3 rounded-lg text-sm font-bold flex items-center justify-center gap-2 shadow-lg"><i class="fa-solid fa-toolbox"></i> Toggle Creative Tools</button>
+    </div>
+    
+    <div id="planner-sidebar" class="hidden md:flex w-full md:w-1/3 flex-col gap-4 shrink-0">
+
                     <div id="planner-tools-container" class="bg-slate-800 rounded-xl p-5 border border-slate-700 shadow-lg">
                         <h3 class="text-lg font-bold text-white mb-3">AI Booker</h3>
                         <textarea id="booker-prompt" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-white focus:border-red-500 h-32 mb-3 resize-none" placeholder="Instructions: E.g., 'Book a 5-match card ending with a cliffhanger. Use the current roster.'"></textarea>
@@ -782,7 +810,14 @@
     <i class="fa-solid fa-clock-rotate-left"></i> Extend Timeline
 </button></div><div id="calendar-body" class="calendar-grid rounded-b-xl"></div></div></div>
         
-        <div id="view-roster" class="main-view hidden-view flex-1 overflow-hidden flex"><div class="w-64 bg-slate-800 border-r border-slate-700 p-4 flex flex-col"><h3 class="text-xs font-bold text-slate-500 uppercase mb-3 px-2">Show Filters</h3><div id="roster-filters" class="space-y-1 flex-1 overflow-y-auto"></div><div class="pt-4 border-t border-slate-700"><button onclick="openUploadModal('roster')" class="w-full bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded font-bold mb-2 text-sm"><i class="fa-solid fa-camera mr-2"></i> Upload Image</button></div></div><div class="flex-1 overflow-y-auto p-8 bg-slate-900"><div class="max-w-6xl mx-auto"><div class="flex justify-between items-center mb-6"><div class="flex items-center gap-3"><img id="roster-page-logo" class="h-10 hidden"><h2 id="roster-view-title" class="text-3xl font-bold text-white">All Roster</h2></div><div class="flex bg-slate-700 rounded p-1 mx-4">
+       <div id="view-roster" class="main-view hidden-view flex-1 overflow-hidden flex flex-col md:flex-row">
+    <div id="roster-sidebar" class="hidden md:flex w-full md:w-64 bg-slate-800 border-b md:border-b-0 md:border-r border-slate-700 p-4 flex-col max-h-[50vh] md:max-h-full overflow-y-auto shrink-0"><h3 class="text-xs font-bold text-slate-500 uppercase mb-3 px-2">Show Filters</h3><div id="roster-filters" class="space-y-1 flex-1 overflow-y-auto"></div><div class="pt-4 border-t border-slate-700"><button onclick="openUploadModal('roster')" class="w-full bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded font-bold mb-2 text-sm"><i class="fa-solid fa-camera mr-2"></i> Upload Image</button></div></div><div class="flex-1 overflow-y-auto p-8 bg-slate-900"><div class="max-w-6xl mx-auto"><div class="flex justify-between items-center mb-6"><div class="flex items-center justify-between w-full md:w-auto gap-3">
+    <div class="flex items-center gap-3">
+        <img id="roster-page-logo" class="h-8 md:h-10 hidden">
+        <h2 id="roster-view-title" class="text-2xl md:text-3xl font-bold text-white">All Roster</h2>
+    </div>
+    <button onclick="toggleMobileMenu('roster-sidebar')" class="md:hidden bg-slate-800 border border-slate-600 text-white px-3 py-2 rounded text-xs font-bold shadow"><i class="fa-solid fa-filter"></i></button>
+</div><div class="flex bg-slate-700 rounded p-1 mx-4">
     <button onclick="setRosterViewMode('official')" id="btn-view-official" class="px-3 py-1 rounded text-xs font-bold bg-blue-600 text-white shadow">Manual</button>
     <button onclick="setRosterViewMode('system')" id="btn-view-system" class="px-3 py-1 rounded text-xs font-bold text-slate-400 hover:text-white">System Tracker</button>
 </div>
@@ -794,8 +829,12 @@
 
 <button onclick="openManualAddModal()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded font-bold"><i class="fa-solid fa-plus mr-2"></i> Add Wrestler</button></div><div id="roster-upload-status" class="hidden bg-slate-800 p-4 rounded mb-4 border border-blue-500 text-blue-400 animate-pulse"><i class="fa-solid fa-robot mr-2"></i> AI is scanning image...</div><div id="roster-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div></div></div></div>
 
-<div id="view-rivalries" class="main-view hidden-view flex-1 overflow-hidden flex">
-    <div class="w-72 bg-slate-800 border-r border-slate-700 p-4 flex flex-col">
+<div id="view-rivalries" class="main-view hidden-view flex-1 overflow-hidden flex flex-col md:flex-row">
+    <div class="md:hidden w-full bg-slate-900 p-3 border-b border-slate-700 shrink-0 z-10">
+        <button onclick="toggleMobileMenu('rivalries-sidebar')" class="w-full bg-slate-800 border border-slate-600 text-white py-2 rounded text-sm font-bold shadow-lg"><i class="fa-solid fa-list-ul mr-2"></i> Storylines Menu</button>
+    </div>
+    
+    <div id="rivalries-sidebar" class="hidden md:flex w-full md:w-72 bg-slate-800 border-b md:border-b-0 md:border-r border-slate-700 p-4 flex-col shrink-0 max-h-[40vh] md:max-h-full overflow-y-auto">
         <h3 class="text-xs font-bold text-slate-500 uppercase mb-3 px-2">Active Storylines</h3>
         <div id="rivalry-list" class="space-y-2 flex-1 overflow-y-auto"></div>
         <button onclick="createNewRivalry()" class="w-full bg-blue-600 hover:bg-blue-500 text-white px-4 py-3 rounded font-bold mt-4 shadow-lg shadow-blue-900/50">
@@ -949,7 +988,12 @@
 
 
 
-        <div id="view-dirtsheet" class="main-view hidden-view flex-1 overflow-hidden flex"><div class="w-64 bg-slate-800 border-r border-slate-700 p-4 overflow-y-auto"><h2 class="text-xl font-bold text-white mb-4">Back Issues</h2><div id="archive-list" class="space-y-2"></div></div><div class="flex-1 bg-slate-200 overflow-y-auto p-8"><div id="archive-viewer" class="max-w-4xl mx-auto bg-white shadow-2xl min-h-screen magazine-container rounded"><div class="p-20 text-center text-slate-400">Select an issue.</div></div><div id="archive-controls" class="hidden absolute top-4 right-8"><button onclick="document.getElementById('archive-image-upload').click()" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1 rounded text-xs mr-2 shadow-lg">Upload Cover</button><input id="archive-image-upload" type="file" class="hidden" accept="image/*" onchange="addArchiveImage()"></div></div></div>
+        <div id="view-dirtsheet" class="main-view hidden-view flex-1 overflow-hidden flex flex-col md:flex-row">
+    <div class="md:hidden w-full bg-slate-900 p-3 border-b border-slate-700 shrink-0 z-10">
+        <button onclick="toggleMobileMenu('archive-sidebar')" class="w-full bg-slate-800 border border-slate-600 text-white py-2 rounded text-sm font-bold shadow-lg"><i class="fa-solid fa-folder-open mr-2"></i> View Back Issues</button>
+    </div>
+    
+    <div id="archive-sidebar" class="hidden md:flex w-full md:w-64 bg-slate-800 border-b md:border-b-0 md:border-r border-slate-700 p-4 flex-col shrink-0 max-h-[40vh] md:max-h-full overflow-y-auto"><h2 class="text-xl font-bold text-white mb-4">Back Issues</h2><div id="archive-list" class="space-y-2"></div></div><div class="flex-1 bg-slate-200 overflow-y-auto p-8"><div id="archive-viewer" class="max-w-4xl mx-auto bg-white shadow-2xl min-h-screen magazine-container rounded"><div class="p-20 text-center text-slate-400">Select an issue.</div></div><div id="archive-controls" class="hidden absolute top-4 right-8"><button onclick="document.getElementById('archive-image-upload').click()" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1 rounded text-xs mr-2 shadow-lg">Upload Cover</button><input id="archive-image-upload" type="file" class="hidden" accept="image/*" onchange="addArchiveImage()"></div></div></div>
        <div id="view-settings" class="main-view hidden-view flex-1 p-6">
             <div class="max-w-md mx-auto bg-slate-800 p-6 rounded text-white border border-slate-700 space-y-6">
                 
@@ -1387,6 +1431,19 @@ function toggleSidebar() {
         // Close sidebar
         sidebar.classList.add('-translate-x-full');
         overlay.classList.add('hidden');
+    }
+}
+
+
+// --- SUB-MENU TOGGLE (MOBILE) ---
+function toggleMobileMenu(id) {
+    const el = document.getElementById(id);
+    if (el.classList.contains('hidden')) {
+        el.classList.remove('hidden');
+        el.classList.add('flex'); // Force flex display when open
+    } else {
+        el.classList.add('hidden');
+        el.classList.remove('flex');
     }
 }
 
